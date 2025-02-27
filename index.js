@@ -24,8 +24,15 @@ if (!GOOGLE_API_KEY) {
   process.exit(1);
 }
 
-// Инициализация Gemini AI с правильной конфигурацией
-const genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+// Инициализация Gemini AI с проверкой ключа
+let genAI;
+try {
+  genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+} catch (error) {
+  console.error('Ошибка при инициализации Gemini AI:', error);
+  process.exit(1);
+}
+
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 // Шаблон промпта для генерации маршрута
@@ -106,30 +113,120 @@ const retryOperation = async (operation, maxAttempts = 3, initialDelay = 2000) =
 const generateRoute = async (userPrompt, temperature = 0.7) => {
   const enhancedPrompt = ROUTE_PROMPT_TEMPLATE(userPrompt);
   
-  const response = await model.generateContent({
-    contents: [{ role: 'user', parts: [{ text: enhancedPrompt }]}],
-    generationConfig: {
-      temperature,
-      topK: 40,
-      topP: 0.95,
-      maxOutputTokens: 4096,
+  try {
+    // Используем retryOperation для проверки API ключа
+    const isKeyValid = await retryOperation(async () => {
+      try {
+        const testModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const testResult = await testModel.generateContent({
+          contents: [{ role: 'user', parts: [{ text: 'Test connection' }]}],
+          generationConfig: {
+            temperature: 0.1,
+            maxOutputTokens: 10,
+          }
+        });
+        return true;
+      } catch (error) {
+        if (error.message?.includes('API key expired') || error.message?.includes('API_KEY_INVALID')) {
+          console.error('Проблема с API ключом:', error.message);
+          return false;
+        }
+        throw error;
+      }
+    }, 3, 1000);
+
+    if (!isKeyValid) {
+      throw new Error('API ключ недействителен или истек. Пожалуйста, обновите API ключ.');
     }
-  });
 
-  if (!response || !response.response) {
-    throw new Error('Пустой ответ от API');
+    // Используем retryOperation для генерации контента
+    const response = await retryOperation(async () => {
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: enhancedPrompt }]}],
+        generationConfig: {
+          temperature,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 4096,
+        }
+      });
+
+      if (!result || !result.response) {
+        throw new Error('Пустой ответ от API');
+      }
+
+      return result;
+    }, 3, 2000);
+
+    const text = response.response.text();
+    console.log('Получен ответ от API длиной:', text.length, 'символов');
+    
+    // Попытка найти JSON в ответе
+    let jsonData;
+    try {
+      // Сначала пробуем распарсить весь ответ как JSON
+      jsonData = JSON.parse(text);
+    } catch (e) {
+      // Если не получилось, ищем JSON в тексте
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        throw new Error('JSON не найден в ответе');
+      }
+      try {
+        jsonData = JSON.parse(jsonMatch[0]);
+      } catch (e) {
+        throw new Error('Не удалось распарсить JSON из ответа');
+      }
+    }
+
+    // Валидация структуры данных
+    if (!jsonData.stages || !Array.isArray(jsonData.stages) || jsonData.stages.length === 0) {
+      throw new Error('Некорректная структура данных: отсутствует или пуст массив stages');
+    }
+
+    // Проверка и дополнение данных
+    jsonData.stages = jsonData.stages.map((stage, index) => ({
+      name: stage.name || `Точка ${index + 1}`,
+      type: stage.type || 'Место',
+      description: stage.description || 'Описание отсутствует',
+      address: stage.address || 'Адрес уточняется',
+      coordinates: Array.isArray(stage.coordinates) && stage.coordinates.length === 2 
+        ? stage.coordinates 
+        : [55.753215, 37.622504], // Координаты центра Москвы по умолчанию
+      time: stage.time || '30 минут',
+      facts: Array.isArray(stage.facts) ? stage.facts : [],
+      photos: Array.isArray(stage.photos) ? stage.photos : [],
+      routeFromPrevious: {
+        walking: stage.routeFromPrevious?.walking || '',
+        transport: stage.routeFromPrevious?.transport || '',
+        time: stage.routeFromPrevious?.time || '',
+        distance: stage.routeFromPrevious?.distance || ''
+      },
+      tips: {
+        weather: stage.tips?.weather || '',
+        crowds: stage.tips?.crowds || '',
+        money: stage.tips?.money || ''
+      }
+    }));
+
+    // Проверка и дополнение метаданных
+    if (!jsonData.metadata) {
+      jsonData.metadata = {};
+    }
+
+    jsonData.metadata = {
+      totalTime: jsonData.metadata.totalTime || 'Не указано',
+      totalDistance: jsonData.metadata.totalDistance || 'Не указано',
+      budgetEstimate: jsonData.metadata.budgetEstimate || 'Не указано',
+      bestFor: Array.isArray(jsonData.metadata.bestFor) ? jsonData.metadata.bestFor : [],
+      safetyTips: Array.isArray(jsonData.metadata.safetyTips) ? jsonData.metadata.safetyTips : []
+    };
+
+    return jsonData;
+  } catch (error) {
+    console.error('Ошибка при генерации маршрута:', error);
+    throw new Error(`Ошибка при генерации маршрута: ${error.message}`);
   }
-
-  const text = await response.response.text();
-  console.log('Получен ответ от API длиной:', text.length, 'символов');
-  console.log('Первые 500 символов ответа:', text.substring(0, 500));
-
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('JSON не найден в ответе');
-  }
-
-  return JSON.parse(jsonMatch[0]);
 };
 
 // Основной маршрут для генерации

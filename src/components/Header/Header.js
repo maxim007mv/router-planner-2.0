@@ -57,7 +57,7 @@ const Header = () => {
           >
             {theme === 'dark' ? <FaSun /> : <FaMoon />}
           </button>
-          {!user && (
+          {!user ? (
             <>
               <button onClick={() => navigate('/auth')} className="nav-link">
                 Войти
@@ -66,6 +66,21 @@ const Header = () => {
                 Регистрация
               </button>
             </>
+          ) : (
+            <div className="user-profile-nav">
+              <button onClick={() => navigate('/profile')} className="profile-button">
+                <img 
+                  src={user.avatar || 'https://via.placeholder.com/32'} 
+                  alt={user.username}
+                  className="profile-avatar"
+                />
+                <span className="profile-name">{user.username}</span>
+              </button>
+              <button onClick={handleLogout} className="nav-link logout">
+                <FaSignOutAlt />
+                <span>Выйти</span>
+              </button>
+            </div>
           )}
         </nav>
 
