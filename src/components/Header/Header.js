@@ -26,6 +26,11 @@ const Header = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleImageError = (e) => {
+    e.target.src = '';
+    e.target.classList.add('default-avatar');
+  };
+
   const menuItems = [
     { icon: <FaHome />, label: 'Главная', action: () => navigate('/') },
     { icon: <FaMapMarkedAlt />, label: 'Создать маршрут', action: () => navigate('/create-route') },
@@ -70,9 +75,10 @@ const Header = () => {
             <div className="user-profile-nav">
               <button onClick={() => navigate('/profile')} className="profile-button">
                 <img 
-                  src={user.avatar || 'https://via.placeholder.com/32'} 
-                  alt={user.username}
                   className="profile-avatar"
+                  src={user.avatar || ''}
+                  alt={user.username}
+                  onError={handleImageError}
                 />
                 <span className="profile-name">{user.username}</span>
               </button>

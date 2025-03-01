@@ -1,70 +1,299 @@
-# Getting Started with Create React App
+<div align="center">
+  <img src="https://i.ibb.co/TB374FbC/1605b46e-fb09-4344-84a0-873a072734f4.png" alt="Route Planner Logo" width="200"/>
+  
+  # 🗺️ Route Planner Moscow
+  
+  [![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📋 Содержание
+- [О проекте](#-о-проекте)
+- [Функционал](#-текущий-функционал)
+  - [Маршруты](#маршруты)
+  - [Интерфейс](#интерфейс)
+  - [Пользовательские функции](#пользовательские-функции)
+  - [Категории маршрутов](#категории-маршрутов)
+- [История изменений](#-история-изменений)
+  - [Версия 2.0.0](#версия-200-март-2024)
+  - [Версия 1.4.0](#версия-140-февраль-2024)
+  - [Версия 1.3.0](#версия-130-февраль-2024)
+  - [Версия 1.2.0](#версия-120-февраль-2024)
+  - [Версия 1.1.0](#версия-110-январь-2024)
+- [Планы развития](#-планы-развития)
+- [Технологии](#-технологии)
+- [Установка](#-установка)
+- [Команда](#-команда)
+- [Контакты](#-контакты)
+- [Лицензия](#-лицензия)
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🌟 О проекте
+Route Planner Moscow - это интерактивный планировщик пешеходных маршрутов по историческим местам Москвы. Приложение помогает туристам и жителям города открывать интересные места и строить оптимальные маршруты для прогулок.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 💡 Текущий функционал
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Маршруты
+- Интеллектуальный подбор маршрутов на основе базы данных
+- Интеграция с кафе и точками питания
+- Детальные описания исторических маршрутов
+- Информация о достопримечательностях
+- Рекомендации по времени посещения
+- Оценка бюджета прогулки
+- Интерактивные карточки маршрутов
 
-### `npm test`
+### Категории маршрутов
+- Тематические маршруты
+  - Исторические
+  - Архитектурные
+  - Культурные
+- Маршруты по сезонам
+  - Летние
+  - Зимние
+  - Весенние
+  - Осенние
+- Специальные маршруты
+  - Выходного дня
+  - Вечерние
+  - Праздничные
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Интерфейс
+- Полная адаптивность под мобильные устройства 📱
+- Темная и светлая темы оформления
+- Анимированные переходы между страницами
+- Интерактивная карта с навигацией
 
-### `npm run build`
+### Пользовательские функции
+- Стабильная авторизация/регистрация
+- Личный кабинет пользователя 📄
+  - Сохранение избранных маршрутов ⭐
+  - Система оценок и отзывов 📝
+  - История посещенных мест
+- Рекомендации на основе предпочтений 🔍
+- JWT-аутентификация 🔒
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📝 История изменений
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Версия 2.0.0 (15 марта 2024)
+#### Революционные изменения:
+- Полная переписка на **React.js + TypeScript**
+- Интеграция с нейросетью **Qwen-Max 3.0**
+- Добавлены:
+  - Личные профили пользователей
+  - Система сохранения маршрутов
+  - Оценки и отзывы
+  - Темная тема
+- Улучшена производительность
+- Оптимизация под мобильные устройства
 
-### `npm run eject`
+### Версия 1.4.0 (21 февраля 2024)
+#### Основные улучшения
+- Переработка системы авторизации
+- Сохранение сессии пользователя (ник, аватар)
+- Интеграция с базой данных маршрутов и кафе
+- Оптимизация алгоритма подбора маршрутов
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Версия 1.3.0 (8 февраля 2024)
+#### Новые функции
+- Система регистрации и авторизации
+- Личный кабинет пользователя
+- Сезонные и тематические маршруты
+- Улучшенная генерация запросов к AI
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🚀 Планы развития
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Активная разработка (Q2 2024)
+- [ ] Полная интеграция погодного API
+- [ ] Оптимизация баз данных
+- [ ] Голосовой помощник для навигации
+- [ ] AR-навигация через камеру телефона
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🛠️ Технологии
+- **Frontend**: React.js (Hooks API), TypeScript
+- **Стилизация**: SCSS, CSS Variables, styled-components
+- **AI**: Qwen-Max 3.0
+- **Карты**: Yandex Maps API
+- **Сборка**: Vite
+- **Состояние**: Redux Toolkit
+- **Безопасность**: JWT, encrypted localStorage
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## ⚙️ Установка и запуск
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Предварительные требования
 
-### Analyzing the Bundle Size
+- Node.js (версия 16.x или выше)
+- npm (версия 8.x или выше)
+- Git
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### 1. Клонирование репозитория
 
-### Making a Progressive Web App
+```bash
+git clone [URL вашего репозитория]
+cd router-planner-3.0
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### 2. Установка зависимостей клиента
 
-### Advanced Configuration
+```bash
+cd my-app
+npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### 3. Настройка переменных окружения клиента
 
-### Deployment
+Создайте файл `.env` в папке `my-app`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+```env
+REACT_APP_API_URL=http://localhost:3005
+REACT_APP_YANDEX_MAPS_API_KEY=ваш_ключ_яндекс_карт
+```
 
-### `npm run build` fails to minify
+### 4. Установка зависимостей сервера
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```bash
+cd server
+npm install express cors jsonwebtoken bcrypt dotenv multer axios openai
+```
+
+### 5. Настройка переменных окружения сервера
+
+Создайте файл `.env` в папке `server`:
+
+```env
+PORT=3005
+JWT_SECRET=ваш_секретный_ключ
+OPENAI_API_KEY=ваш_ключ_qwen_max
+YANDEX_GEOCODER_API_KEY=ваш_ключ_геокодера
+```
+
+### 6. Создание необходимых директорий
+
+```bash
+cd server
+mkdir uploads
+```
+
+### 7. Запуск проекта
+
+Запустите сервер (в папке server):
+```bash
+cd server
+node index.js
+```
+
+В новом терминале запустите клиент (в папке my-app):
+```bash
+cd my-app
+npm start
+```
+
+### 8. Проверка работоспособности
+
+- Клиент будет доступен по адресу: `http://localhost:3000`
+- Сервер будет доступен по адресу: `http://localhost:3005`
+
+### Структура проекта
+
+```
+router-planner-3.0/
+├── my-app/                 # React приложение
+│   ├── public/
+│   │   ├── components/    # React компоненты
+│   │   ├── contexts/      # Контексты React
+│   │   ├── hooks/         # Пользовательские хуки
+│   │   ├── styles/        # CSS стили
+│   │   └── App.js
+│   ├── package.json
+│   └── .env
+│
+└── server/                # Express сервер
+    ├── uploads/          # Папка для загрузки файлов
+    ├── auth.js          # Аутентификация
+    ├── index.js         # Основной файл сервера
+    ├── package.json
+    └── .env
+
+```
+
+### Возможные проблемы и их решение
+
+1. **Ошибка EADDRINUSE (порт занят)**
+   ```bash
+   sudo lsof -i :3005  # Найти процесс
+   kill -9 [PID]       # Остановить процесс
+   ```
+
+2. **Ошибки с CORS**
+   - Убедитесь, что в файле `server/index.js` правильно настроен CORS
+   - Проверьте, что URL клиента соответствует настройкам CORS
+
+3. **Ошибки с загрузкой файлов**
+   - Проверьте права на папку `uploads`
+   - Убедитесь, что папка создана
+
+### Режим разработки
+
+Для удобства разработки рекомендуется использовать nodemon на сервере:
+
+```bash
+npm install -g nodemon
+cd server
+nodemon index.js
+```
+
+### Продакшн сборка
+
+Для создания продакшн сборки:
+
+```bash
+cd my-app
+npm run build
+```
+
+Результат сборки будет в папке `my-app/build`
+
+## 🤝 Вклад в проект
+
+Мы приветствуем вклад в развитие проекта! Если у вас есть идеи по улучшению:
+
+1. Форкните репозиторий
+2. Создайте ветку для ваших изменений
+3. Внесите изменения
+4. Создайте Pull Request
+
+## 📄 Лицензия
+
+Этот проект распространяется под собственной лицензией. Подробности в файле [LICENSE](LICENSE.md).ы
+
+## 👥 Команда
+
+- **Разработчик**: [Максим](https://github.com/maxim007mv)
+- **ML-инженер**: [Максим](https://github.com/maxim007mv)
+- **Дизайнер**: [Максим](https://github.com/maxim007mv)
+
+
+
+## 📞 Контакты
+
+Если у вас есть вопросы или предложения, свяжитесь с нами:
+
+- Email: maviryscompani@internet.ru
+- Telegram: [@Iliydly](https://t.me/Iliydly)
+
+
+---
+
+<div align="center">
+  <sub>Built with ❤️ in Moscow</sub>
+</div>

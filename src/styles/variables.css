@@ -1,0 +1,85 @@
+:root {
+  /* Основные цвета 2024 */
+  --bg-dark: #13151a;
+  --bg-darker: #0d0f13;
+  --bg-lighter: #1c1f26;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --accent-color: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-muted: rgba(99, 102, 241, 0.1);
+  
+  /* Неоморфические тени 2024 */
+  --shadow-dark: -12px -12px 24px rgba(25, 28, 36, 0.8),
+                 12px 12px 24px rgba(0, 0, 0, 0.8);
+  
+  --shadow-dark-inset: inset -8px -8px 16px rgba(25, 28, 36, 0.5),
+                      inset 8px 8px 16px rgba(0, 0, 0, 0.9);
+  
+  --shadow-dark-small: -6px -6px 12px rgba(25, 28, 36, 0.8),
+                      6px 6px 12px rgba(0, 0, 0, 0.8);
+  
+  /* Градиенты 2024 */
+  --gradient-dark: linear-gradient(145deg, var(--bg-darker), var(--bg-dark));
+  --gradient-glow: linear-gradient(145deg, 
+    rgba(99, 102, 241, 0.1),
+    rgba(99, 102, 241, 0.05)
+  );
+  --gradient-accent: linear-gradient(145deg, var(--accent-color), var(--accent-hover));
+  
+  /* Шрифты */
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Анимации */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Размеры */
+  --border-radius-sm: 12px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 24px;
+}
+
+/* Импорт шрифтов */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+/* Базовые стили */
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  line-height: 1.6;
+}
+
+/* Анимации */
+@keyframes pressDown {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+/* Общие стили для неоморфических элементов */
+.neomorphic {
+  background: var(--gradient-dark);
+  box-shadow: var(--shadow-dark);
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-smooth);
+}
+
+.neomorphic:hover {
+  box-shadow: var(--shadow-dark-small);
+  transform: translateY(-2px);
+}
+
+.neomorphic-inset {
+  background: var(--bg-dark);
+  box-shadow: var(--shadow-dark-inset);
+  border-radius: var(--border-radius-md);
+} 

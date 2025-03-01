@@ -1,33 +1,53 @@
 .art-routes-container {
-  padding: 2rem;
-  max-width: 1200px;
-  margin: 6rem auto 2rem;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  min-height: 100vh;
+  padding: 6rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
 }
 
 .route-selector {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
   margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
 }
 
 .route-selector-btn {
-  padding: 1rem;
-  border: var(--glass-border);
-  background: var(--glass-bg);
-  color: var(--text-primary);
+  position: relative;
+  padding: 1rem 1.5rem;
+  border: none;
   border-radius: 12px;
-  cursor: pointer;
-  font-size: 0.9rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  color: var(--text-primary);
+  font-size: 1rem;
   font-weight: 500;
+  cursor: pointer;
   transition: all 0.3s ease;
-  text-align: center;
+  border: var(--glass-border);
+  overflow: hidden;
   height: 100%;
+  min-height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60px;
+  text-align: center;
+}
+
+.route-selector-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .route-selector-btn:hover {
@@ -41,17 +61,22 @@
   border: none;
 }
 
+.route-selector-btn.active::before {
+  opacity: 1;
+}
+
 .art-route-card {
+  width: 100%;
+  max-width: 1200px;
   background: var(--glass-bg);
   backdrop-filter: blur(10px);
   border-radius: 24px;
-  border: var(--glass-border);
   padding: 2rem;
   margin-bottom: 2rem;
-  overflow: hidden;
-  position: relative;
   box-shadow: var(--neumorphic-shadow);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border: var(--glass-border);
+  position: relative;
+  overflow: hidden;
 }
 
 .art-route-card::before {
@@ -60,199 +85,241 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 5px;
+  height: 4px;
   background: var(--accent-gradient);
 }
 
 .route-header {
-  display: flex;
-  align-items: center;
+  text-align: center;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
 }
 
 .route-icon {
   font-size: 2.5rem;
-  color: var(--accent-color);
-  margin-right: 1rem;
-  transition: color 0.3s ease;
+  color: #6e8efb;
+  margin-bottom: 1rem;
 }
 
 .route-header h2 {
   font-size: 2rem;
-  color: var(--text-primary);
-  margin: 0;
-  flex: 1;
-  transition: color 0.3s ease;
+  color: #333;
+  margin: 1rem 0;
 }
 
 .route-description {
-  width: 100%;
-  margin-top: 1rem;
-  color: var(--text-secondary);
+  color: #666;
   font-size: 1.1rem;
   line-height: 1.6;
-  transition: color 0.3s ease;
 }
 
-.transport-info {
-  background: var(--glass-bg);
+.route-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin: 2rem 0;
   padding: 1rem;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+}
+
+.info-item {
   display: flex;
   align-items: center;
-  margin-bottom: 2rem;
-  border-left: 4px solid var(--accent-color);
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  gap: 0.5rem;
+  padding: 0.5rem;
 }
 
 .info-icon {
-  color: var(--accent-color);
-  margin-right: 0.8rem;
+  color: #6e8efb;
   font-size: 1.2rem;
-  transition: color 0.3s ease;
 }
 
-.stages-container {
+.transport-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(110, 142, 251, 0.1);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.route-points {
   display: grid;
-  gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-.stage-card {
+.route-point {
   background: var(--glass-bg);
-  border-radius: 15px;
+  border-radius: 16px;
   padding: 1.5rem;
   border: var(--glass-border);
   box-shadow: var(--neumorphic-shadow);
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.stage-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+.route-point::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-gradient);
+  opacity: 0.7;
 }
 
-.stage-header {
+.route-point:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--neumorphic-shadow-hover);
+}
+
+.point-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  transition: border-color 0.3s ease;
+  border-bottom: 1px solid var(--border-color);
 }
 
-.stage-header h3 {
-  font-size: 1.3rem;
-  color: var(--text-primary);
-  margin: 0;
+.point-header h3 {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  transition: color 0.3s ease;
+  gap: 0.8rem;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin: 0;
 }
 
-.stage-icon {
+.point-icon {
   color: var(--accent-color);
-  transition: color 0.3s ease;
+  font-size: 1.4rem;
 }
 
 .duration {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  border-radius: 20px;
   color: var(--text-secondary);
   font-size: 0.9rem;
-  background: var(--glass-bg);
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  border: var(--glass-border);
-  transition: all 0.3s ease;
 }
 
 .time-icon {
   color: var(--accent-color);
-  transition: color 0.3s ease;
 }
 
-.stage-address,
-.stage-transport {
-  display: flex;
-  align-items: center;
-  margin: 0.8rem 0;
+.point-description {
   color: var(--text-secondary);
-  font-size: 0.95rem;
-  transition: color 0.3s ease;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
-.stage-highlights {
-  margin: 1rem 0;
-}
-
-.highlight-item {
-  display: flex;
-  align-items: center;
-  margin: 0.5rem 0;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  transition: color 0.3s ease;
-}
-
-.stage-tip {
-  background: rgba(99, 102, 241, 0.1);
-  padding: 1rem;
-  border-radius: 10px;
-  margin: 1rem 0;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.8rem;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  border: 1px solid rgba(99, 102, 241, 0.2);
-  transition: all 0.3s ease;
-}
-
-.final-stop {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(99, 102, 241, 0.1);
-  border-radius: 10px;
+.point-address,
+.point-transition {
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  padding: 0.8rem;
+  background: var(--glass-bg);
+  border: var(--glass-border);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  margin: 1rem 0;
+}
+
+.point-activities,
+.point-tips {
+  margin: 1.5rem 0;
+}
+
+.point-activities h4,
+.point-tips h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   color: var(--text-primary);
-  font-size: 0.95rem;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.activity-item,
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.activity-item:hover,
+.tip-item:hover {
+  background: var(--glass-bg);
+}
+
+.point-map-link {
+  margin-top: 1.5rem;
+}
+
+.point-map-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1.2rem;
+  background: var(--accent-gradient);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 500;
   transition: all 0.3s ease;
+}
+
+.point-map-link a:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neumorphic-shadow);
+}
+
+.view-full-route {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.view-route-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: var(--accent-gradient);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.view-route-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--neumorphic-shadow);
+}
+
+.button-icon {
+  font-size: 1.3rem;
 }
 
 @media (max-width: 768px) {
   .art-routes-container {
-    padding: 1rem;
-    margin-top: 5rem;
-  }
-
-  .route-header {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .route-icon {
-    margin: 0 0 1rem 0;
-  }
-
-  .stages-container {
-    grid-template-columns: 1fr;
-  }
-
-  .stage-header {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .duration {
-    align-self: flex-start;
+    padding: 5rem 1rem 1rem;
   }
 
   .route-selector {
@@ -260,8 +327,33 @@
   }
 
   .route-selector-btn {
-    width: 100%;
-    font-size: 0.85rem;
-    padding: 0.8rem;
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .art-route-card {
+    padding: 1rem;
+  }
+
+  .route-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .route-points {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .point-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .point-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .duration {
+    align-self: flex-start;
   }
 } 
