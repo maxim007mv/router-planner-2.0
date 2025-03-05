@@ -14,9 +14,14 @@ import {
   Alert,
   Snackbar,
 } from '@mui/material';
+import { useAuth } from '../context/AuthContext'; // Импортируем контекст аутентификации
+
+// Используем переменную окружения для API_URL
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
 
 const RouteForm = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // Получаем текущего пользователя
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -35,50 +40,146 @@ const RouteForm = () => {
     }));
   };
 
+  const parseRoutePoints = (routeText) => {
+    const points = [];
+    const pointsSection = routeText.split('📍 ДЕТАЛЬНЫЙ МАРШРУТ:')[1];
+    
+    if (pointsSection) {
+      // Разбиваем на блоки по номерам точек
+      const pointsBlocks = pointsSection.split(/\n\n\d+\./);
+      
+      // Пропускаем первый элемент, так как он пустой
+      for (let i = 1; i < pointsBlocks.length; i++) {
+        const block = pointsBlocks[i];
+        const lines = block.trim().split('\n');
+        
+        const point = {
+          name: '',
+          description: '',
+          duration: '',
+          activities: [],
+          tips: [],
+          food: [],
+          photos: [],
+          transition: ''
+        };
+
+        // Первая строка - это название точки
+        point.name = lines[0].trim();
+
+        let currentSection = '';
+        for (let j = 1; j < lines.length; j++) {
+          const line = lines[j].trim();
+          
+          if (line.startsWith('⏱️')) {
+            point.duration = line.replace('⏱️ Время:', '').trim();
+          } else if (line.startsWith('📝')) {
+            point.description = line.replace('📝 Описание:', '').trim();
+          } else if (line.startsWith('🎯 Активности:')) {
+            currentSection = 'activities';
+          } else if (line.startsWith('💡 Советы:')) {
+            currentSection = 'tips';
+          } else if (line.startsWith('🍽️')) {
+            const food = line.replace('🍽️ Где поесть:', '').trim();
+            if (food) point.food.push(food);
+          } else if (line.startsWith('📸')) {
+            const photos = line.replace('📸 Фото:', '').trim();
+            if (photos) point.photos = [photos];
+          } else if (line.startsWith('🚶')) {
+            point.transition = line.replace('🚶 Переход:', '').trim();
+          } else if (line.startsWith('- ')) {
+            // Добавляем элементы в текущую секцию
+            const item = line.replace('- ', '').trim();
+            if (currentSection === 'activities' && item) {
+              point.activities.push(item);
+            } else if (currentSection === 'tips' && item) {
+              point.tips.push(item);
+            }
+          }
+        }
+
+        if (point.name) {
+          points.push(point);
+        }
+      }
+    }
+    
+    console.log('Распарсенные точки:', points);
+    return points;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     
     try {
-      const prompt = `Сгенерируй персональный маршрут прогулки со следующими параметрами:
-      - Время прогулки: ${formData.walkingTime} час(а/ов)
-      - Компания: ${formData.companions}
-      - Бюджет: ${formData.budget}
-      - Предпочтения по кафе: ${formData.cafePreferences}
-      - Дополнительные пожелания: ${formData.additionalWishes}
-      
-      Пожалуйста, предоставь детальный маршрут с рекомендациями по местам посещения, кафе и достопримечательностям.`;
+      console.log('Отправляем запрос с данными:', formData);
 
-      console.log('Отправляем запрос с данными:', { prompt });
-
-      const response = await fetch('http://localhost:3005/generate-route', {
+      const response = await fetch(`${API_URL}/api/generate-route`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ prompt })
+        body: JSON.stringify({
+          categories: ['food', 'culture', 'entertainment'],
+          duration: formData.walkingTime,
+          pace: 'moderate',
+          transportType: 'walking',
+          timeOfDay: 'afternoon',
+          accessibility: 'standard',
+          preferences: `Компания: ${formData.companions}. Бюджет: ${formData.budget}. Предпочтения по кафе: ${formData.cafePreferences}. Дополнительные пожелания: ${formData.additionalWishes}`,
+          userId: user ? user.uid : null
+        })
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        console.error('Ошибка от сервера:', data);
-        throw new Error(data.error || 'Ошибка при генерации маршрута');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка при генерации маршрута');
       }
 
+      const data = await response.json();
       console.log('Получен ответ от сервера:', data);
-      
+      console.log('Тип данных ответа:', typeof data);
+      console.log('Структура ответа:', Object.keys(data));
+
+      // Проверяем наличие необходимых данных
+      if (!data.generatedRoute) {
+        throw new Error('Некорректный формат ответа от сервера');
+      }
+
+      // Парсим точки из текстового описания маршрута
+      const routePoints = parseRoutePoints(data.generatedRoute);
+      console.log('Распарсенные точки маршрута:', routePoints);
+
+      // Разделяем описание маршрута и детальный маршрут
+      const [overview, details] = data.generatedRoute.split('📍 ДЕТАЛЬНЫЙ МАРШРУТ:');
+
+      // Форматируем маршрут для сохранения
       const formattedRoute = {
-        walkingTime: formData.walkingTime,
+        name: `Маршрут на ${formData.walkingTime} час(а/ов)`,
+        description: overview.trim(),
+        duration: formData.walkingTime,
+        pace: data.routeMetadata?.pace || 'moderate',
+        timeOfDay: data.routeMetadata?.timeOfDay || 'afternoon',
+        points: routePoints,
         companions: formData.companions,
         budget: formData.budget,
-        recommendations: data.output?.text || data.response?.text || 'Нет рекомендаций',
-        routeDescription: data.output?.text || data.response?.text || 'Маршрут не сгенерирован'
+        preferences: {
+          cafePreferences: formData.cafePreferences,
+          additionalWishes: formData.additionalWishes
+        },
+        weatherAdjustments: data.weatherAdjustments || {},
+        recommendations: data.recommendations || {},
+        routeMetadata: {
+          ...data.routeMetadata,
+          generatedAt: new Date().toISOString()
+        }
       };
 
       console.log('Форматированный маршрут:', formattedRoute);
-
+      console.log('Точки маршрута:', formattedRoute.points);
+      console.log('Сохраняем в localStorage:', JSON.stringify(formattedRoute, null, 2));
       localStorage.setItem('generatedRoute', JSON.stringify(formattedRoute));
       navigate('/route');
     } catch (error) {
@@ -146,6 +247,7 @@ const RouteForm = () => {
               fullWidth
               multiline
               rows={2}
+              placeholder="Например: итальянская кухня, веганские блюда, уютная атмосфера..."
             />
 
             <TextField
@@ -156,6 +258,7 @@ const RouteForm = () => {
               fullWidth
               multiline
               rows={4}
+              placeholder="Например: интересуют исторические места, хочется посетить смотровые площадки, нужны места для фотосессии..."
             />
 
             {error && (
@@ -168,10 +271,9 @@ const RouteForm = () => {
               type="submit"
               variant="contained"
               size="large"
-              sx={{ mt: 2 }}
               disabled={isLoading}
             >
-              {isLoading ? 'Генерация...' : 'Сгенерировать Маршрут'}
+              {isLoading ? 'Генерация маршрута...' : 'Сгенерировать маршрут'}
             </Button>
           </Stack>
         </form>

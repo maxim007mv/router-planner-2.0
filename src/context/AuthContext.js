@@ -1,4 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { auth, db } from '../config/firebase';
+import { 
+  onAuthStateChanged, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  signOut,
+  setPersistence,
+  browserLocalPersistence
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -7,94 +17,119 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('user');
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [persistenceSet, setPersistenceSet] = useState(false);
 
   useEffect(() => {
-    // Проверяем токен и получаем данные пользователя при загрузке
-    const token = localStorage.getItem('token');
-    if (token && !user) {
-      fetchUserData(token);
-    }
+    console.log('AuthProvider - Setting up auth persistence');
+    setPersistence(auth, browserLocalPersistence)
+      .then(() => {
+        console.log('AuthProvider - Auth persistence set to local');
+        setPersistenceSet(true);
+      })
+      .catch((error) => {
+        console.error('AuthProvider - Error setting auth persistence:', error);
+        setError(error.message);
+      });
+
+    console.log('AuthProvider - Setting up auth state listener');
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log('AuthProvider - Auth state changed:', user ? `User ${user.uid} detected` : 'No user');
+      
+      if (user) {
+        try {
+          console.log('AuthProvider - Fetching additional user data from Firestore');
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            console.log('AuthProvider - User data found in Firestore:', userData);
+            setCurrentUser({
+              ...user,
+              ...userData
+            });
+          } else {
+            console.log('AuthProvider - No additional user data found in Firestore');
+            setCurrentUser(user);
+          }
+        } catch (error) {
+          console.error('AuthProvider - Error fetching user data:', error);
+          setCurrentUser(user);
+        }
+      } else {
+        console.log('AuthProvider - No user, setting currentUser to null');
+        setCurrentUser(null);
+      }
+      
+      setLoading(false);
+    });
+
+    return () => {
+      console.log('AuthProvider - Cleaning up auth state listener');
+      unsubscribe();
+    };
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
-    } else {
-      localStorage.removeItem('user');
-    }
-  }, [user]);
-
-  const fetchUserData = async (token) => {
+  const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:3005/api/auth/me', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-
-      const userData = await response.json();
-      setUser(userData);
+      console.log('AuthProvider - Attempting login');
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      console.log('AuthProvider - Login successful');
+      return result;
     } catch (error) {
-      console.error('Error fetching user data:', error);
-      logout();
+      console.error('AuthProvider - Login error:', error);
+      throw error;
     }
   };
 
-  const login = (userData) => {
-    setUser(userData);
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  };
-
-  const updateUser = async (updates) => {
+  const register = async (email, password, additionalData = {}) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3005/api/auth/update-profile', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(updates)
+      console.log('AuthProvider - Attempting registration');
+      const result = await createUserWithEmailAndPassword(auth, email, password);
+      
+      // Create user document in Firestore
+      const userDocRef = doc(db, 'users', result.user.uid);
+      await setDoc(userDocRef, {
+        email: result.user.email,
+        createdAt: new Date(),
+        ...additionalData
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to update user data');
-      }
-
-      const updatedUserData = await response.json();
-      setUser(currentUser => ({
-        ...currentUser,
-        ...updatedUserData
-      }));
+      
+      console.log('AuthProvider - Registration successful');
+      return result;
     } catch (error) {
-      console.error('Error updating user data:', error);
+      console.error('AuthProvider - Registration error:', error);
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      console.log('AuthProvider - Attempting logout');
+      await signOut(auth);
+      console.log('AuthProvider - Logout successful');
+    } catch (error) {
+      console.error('AuthProvider - Logout error:', error);
       throw error;
     }
   };
 
   const value = {
-    user,
+    currentUser,
     login,
+    register,
     logout,
-    updateUser
+    loading,
+    error
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
-}; 
+};
+
+export default AuthContext; 

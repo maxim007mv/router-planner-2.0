@@ -1,122 +1,78 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Container, Paper, Box, Typography } from '@mui/material';
+import LoginForm from './LoginForm';
+import Register from './Register';
 import './Auth.css';
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: ''
+  const [authState, setAuthState] = useState({
+    isLogin: true,
+    userType: 'user'
   });
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
-  const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    try {
-      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const response = await fetch(`http://localhost:3005${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Произошла ошибка при аутентификации');
-      }
-
-      // Сохраняем токен и данные пользователя
-      localStorage.setItem('token', data.token);
-      
-      // Обновляем данные пользователя в контексте
-      login({
-        id: data.user.id,
-        username: data.user.username,
-        email: data.user.email,
-        joinDate: data.user.joinDate,
-        avatar: data.user.avatar
-      });
-
-      navigate('/profile');
-    } catch (err) {
-      setError(err.message || 'Произошла ошибка при аутентификации');
-    }
+  const handleSwitchToLogin = () => {
+    setAuthState({ isLogin: true, userType: 'user' });
   };
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const toggleAuthMode = () => {
-    setIsLogin(!isLogin);
-    setError('');
+  const handleSwitchToSignup = (userType = 'user') => {
+    setAuthState({ isLogin: false, userType });
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-form-container">
-        <h2>{isLogin ? 'Вход' : 'Регистрация'}</h2>
-        {error && <div className="error-message">{error}</div>}
-        <form onSubmit={handleSubmit} className="auth-form">
-          <div className="form-group">
-            <label htmlFor="username">Имя пользователя</label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
+    <Container maxWidth="md" sx={{ py: 8 }}>
+      <Paper 
+        elevation={3} 
+        sx={{ 
+          borderRadius: 4,
+          overflow: 'hidden',
+          background: 'var(--bg-darker)',
+          boxShadow: 'var(--shadow-dark)',
+          position: 'relative'
+        }}
+      >
+        <Box 
+          sx={{ 
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: '5px',
+            background: 'linear-gradient(90deg, #6366f1 0%, #4f46e5 100%)'
+          }} 
+        />
+        
+        <Box sx={{ p: 4 }}>
+          <Typography 
+            variant="h3" 
+            component="h1" 
+            align="center" 
+            gutterBottom
+            sx={{ 
+              mb: 4,
+              background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}
+          >
+            {authState.isLogin 
+              ? 'Добро пожаловать!' 
+              : authState.userType === 'guide' 
+                ? 'Регистрация гида'
+                : 'Регистрация пользователя'
+            }
+          </Typography>
+
+          {authState.isLogin ? (
+            <LoginForm onSwitchToSignup={handleSwitchToSignup} />
+          ) : (
+            <Register 
+              initialUserType={authState.userType} 
+              onSwitchToLogin={handleSwitchToLogin}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Пароль</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button type="submit" className="form-submit">
-            {isLogin ? 'Войти' : 'Зарегистрироваться'}
-          </button>
-        </form>
-        <div className="form-switch">
-          <p>
-            {isLogin ? 'Нет аккаунта?' : 'Уже есть аккаунт?'}
-            <button onClick={toggleAuthMode}>
-              {isLogin ? 'Зарегистрироваться' : 'Войти'}
-            </button>
-          </p>
-        </div>
-      </div>
-    </div>
+          )}
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 

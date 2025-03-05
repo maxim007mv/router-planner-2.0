@@ -115,6 +115,39 @@
   color: var(--text-primary);
 }
 
+.guest-option {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.guest-button {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  padding: 1rem 2rem;
+  border: var(--glass-border);
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.guest-button:hover {
+  transform: translateY(-2px);
+  background: var(--glass-bg-hover);
+  box-shadow: var(--neumorphic-shadow);
+}
+
+.guest-note {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .auth-container {
     padding: 1rem;
@@ -126,5 +159,14 @@
 
   .form-group input {
     font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .guest-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .guest-note {
+    font-size: 0.8rem;
   }
 } 

@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
+import {
   FaRoute, FaSun, FaMoon, FaBars, FaTimes,
   FaHome, FaMapMarkedAlt, FaPalette, FaHistory,
-  FaUtensils, FaUser, FaSignOutAlt
+  FaUtensils, FaUser, FaSignOutAlt, FaUsers,
+  FaMapMarkerAlt
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
@@ -12,13 +13,22 @@ import './Header.css';
 
 const Header = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { currentUser, logout } = useAuth();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+      setIsMobileMenuOpen(false);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const handleLogin = () => {
+    navigate('/auth');
     setIsMobileMenuOpen(false);
   };
 
@@ -33,7 +43,9 @@ const Header = () => {
 
   const menuItems = [
     { icon: <FaHome />, label: 'Главная', action: () => navigate('/') },
-    { icon: <FaMapMarkedAlt />, label: 'Создать маршрут', action: () => navigate('/create-route') },
+    { icon: <FaMapMarkedAlt />, label: 'Маршруты', action: () => navigate('/routes') },
+    { icon: <FaMapMarkerAlt />, label: 'Места', action: () => navigate('/places') },
+    { icon: <FaUsers />, label: 'Сообщество', action: () => navigate('/community') },
     { icon: <FaPalette />, label: 'Арт-маршруты', action: () => navigate('/art-routes') },
     { icon: <FaHistory />, label: 'Исторические', action: () => navigate('/historical-routes') },
     { icon: <FaUtensils />, label: 'Гастрономические', action: () => navigate('/gastro-routes') },
@@ -50,10 +62,20 @@ const Header = () => {
         {/* Desktop Navigation */}
         <nav className="desktop-menu">
           <button onClick={() => navigate('/')} className="nav-link">
-            Главная
+            <FaHome className="nav-icon" />
+            <span>Главная</span>
           </button>
-          <button onClick={() => navigate('/create-route')} className="nav-link">
-            Создать маршрут
+          <button onClick={() => navigate('/routes')} className="nav-link">
+            <FaMapMarkedAlt className="nav-icon" />
+            <span>Маршруты</span>
+          </button>
+          <button onClick={() => navigate('/places')} className="nav-link">
+            <FaMapMarkerAlt className="nav-icon" />
+            <span>Места</span>
+          </button>
+          <button onClick={() => navigate('/community')} className="nav-link">
+            <FaUsers className="nav-icon" />
+            <span>Сообщество</span>
           </button>
           <button 
             className="theme-toggle-desktop"
@@ -62,28 +84,28 @@ const Header = () => {
           >
             {theme === 'dark' ? <FaSun /> : <FaMoon />}
           </button>
-          {!user ? (
-            <>
-              <button onClick={() => navigate('/auth')} className="nav-link">
-                Войти
-              </button>
-              <button onClick={() => navigate('/auth')} className="nav-link register">
-                Регистрация
-              </button>
-            </>
+          {!currentUser ? (
+            <button onClick={handleLogin} className="nav-link login">
+              Войти
+            </button>
           ) : (
             <div className="user-profile-nav">
               <button onClick={() => navigate('/profile')} className="profile-button">
-                <img 
-                  className="profile-avatar"
-                  src={user.avatar || ''}
-                  alt={user.username}
-                  onError={handleImageError}
-                />
-                <span className="profile-name">{user.username}</span>
+                {currentUser.photoURL ? (
+                  <img 
+                    className="profile-avatar"
+                    src={currentUser.photoURL}
+                    alt="Profile"
+                    onError={handleImageError}
+                  />
+                ) : (
+                  <div className="profile-avatar default-avatar">
+                    <FaUser />
+                  </div>
+                )}
               </button>
               <button onClick={handleLogout} className="nav-link logout">
-                <FaSignOutAlt />
+                <FaSignOutAlt className="nav-icon" />
                 <span>Выйти</span>
               </button>
             </div>
@@ -99,6 +121,22 @@ const Header = () => {
           >
             {theme === 'dark' ? <FaSun /> : <FaMoon />}
           </button>
+          {currentUser && (
+            <button onClick={() => navigate('/profile')} className="mobile-profile-button">
+              {currentUser.photoURL ? (
+                <img 
+                  className="profile-avatar-mobile"
+                  src={currentUser.photoURL}
+                  alt="Profile"
+                  onError={handleImageError}
+                />
+              ) : (
+                <div className="profile-avatar-mobile default-avatar">
+                  <FaUser />
+                </div>
+              )}
+            </button>
+          )}
           <button 
             className="burger-menu"
             onClick={toggleMobileMenu}
@@ -114,61 +152,67 @@ const Header = () => {
         {/* Mobile Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <div className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+            <motion.div 
+              className={`mobile-menu ${isMobileMenuOpen ? 'active' : ''}`}
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'tween', duration: 0.3 }}
+            >
               <nav className="nav-menu">
                 {menuItems.map((item, index) => (
-                  <button
+                  <motion.button
                     key={index}
                     className="mobile-menu-item"
                     onClick={() => {
                       item.action();
                       setIsMobileMenuOpen(false);
                     }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     {item.icon}
                     <span>{item.label}</span>
-                  </button>
+                  </motion.button>
                 ))}
               </nav>
               <div className="auth-buttons">
-                {user ? (
+                {currentUser ? (
                   <>
-                    <button
-                      className="mobile-menu-item"
+                    <motion.button
+                      className="mobile-menu-item profile"
                       onClick={() => {
                         navigate('/profile');
                         setIsMobileMenuOpen(false);
                       }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
                       <FaUser />
                       <span>Профиль</span>
-                    </button>
-                    <button
-                      className="mobile-menu-item"
+                    </motion.button>
+                    <motion.button
+                      className="mobile-menu-item logout"
                       onClick={handleLogout}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
                       <FaSignOutAlt />
                       <span>Выйти</span>
-                    </button>
+                    </motion.button>
                   </>
                 ) : (
-                  <>
-                    <button className="login-btn" onClick={() => {
-                      navigate('/auth');
-                      setIsMobileMenuOpen(false);
-                    }}>
-                      Войти
-                    </button>
-                    <button className="register-btn" onClick={() => {
-                      navigate('/auth');
-                      setIsMobileMenuOpen(false);
-                    }}>
-                      Регистрация
-                    </button>
-                  </>
+                  <motion.button 
+                    className="login-btn"
+                    onClick={handleLogin}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Войти
+                  </motion.button>
                 )}
               </div>
-            </div>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>

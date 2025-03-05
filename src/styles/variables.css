@@ -1,11 +1,63 @@
 :root {
+  /* Primary Colors */
+  --primary-color: #64BCD4;
+  --primary-light: #8FD5E9;
+  --primary-dark: #4A8E9F;
+  --primary-rgb: 100, 188, 212;
+
+  /* Text Colors */
+  --text-primary: var(--primary-color);
+  --text-secondary: #718096;
+  --text-light: #A0AEC0;
+  --text-dark: #2D3748;
+
+  /* Background Colors */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F7FAFC;
+  --bg-accent: rgba(100, 188, 212, 0.1);
+
+  /* Border Colors */
+  --border-color: #E2E8F0;
+  --border-accent: var(--primary-color);
+
+  /* Status Colors */
+  --success: #48BB78;
+  --warning: #ECC94B;
+  --error: #F56565;
+  --info: var(--primary-color);
+
+  /* Component Specific */
+  --header-text: var(--primary-color);
+  --nav-link-hover: var(--primary-light);
+  --button-primary-bg: var(--primary-color);
+  --button-primary-hover: var(--primary-dark);
+  --card-border: var(--border-color);
+  --card-shadow: 0 2px 4px rgba(var(--primary-rgb), 0.1);
+
+  /* Основные цвета */
+  --accent-color: #8b5cf6;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  
+  /* Градиенты */
+  --accent-gradient: linear-gradient(45deg, #6366f1, #8b5cf6);
+  
+  /* Фоны и границы */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg-hover: rgba(255, 255, 255, 0.05);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  
+  /* Тени */
+  --neumorphic-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
+  /* Анимации */
+  --transition-base: all 0.3s ease;
+  --transition-smooth: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
   /* Основные цвета 2024 */
   --bg-dark: #13151a;
   --bg-darker: #0d0f13;
   --bg-lighter: #1c1f26;
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --accent-color: #6366f1;
   --accent-hover: #818cf8;
   --accent-muted: rgba(99, 102, 241, 0.1);
   
@@ -32,7 +84,6 @@
   --font-mono: 'JetBrains Mono', monospace;
   
   /* Анимации */
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
   /* Размеры */

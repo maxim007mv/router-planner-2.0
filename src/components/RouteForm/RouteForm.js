@@ -14,6 +14,8 @@ import {
 import './RouteForm.css';
 import { useAuth } from '../../context/AuthContext';
 
+const API_URL = process.env.REACT_APP_API_URL;
+
 const categories = [
   { id: 'culture', icon: <FaTheaterMasks />, label: 'Культура и искусство' },
   { id: 'nature', icon: <FaTree />, label: 'Природа и парки' },
@@ -186,14 +188,8 @@ const RouteForm = () => {
     setIsLoading(true);
     setError(null);
 
-    if (!user) {
-      setError('Для создания маршрута необходимо войти в систему');
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch('http://localhost:3005/api/generate-route', {
+      const response = await fetch(`${API_URL}/api/generate-route`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -206,7 +202,7 @@ const RouteForm = () => {
           timeOfDay: formData.timeOfDay,
           accessibility: formData.accessibility,
           preferences: formData.preferences,
-          userId: user.id
+          userId: user?.id
         })
       });
 
@@ -217,8 +213,22 @@ const RouteForm = () => {
       const result = await response.json();
       console.log('Route generated:', result);
 
-      // После успешной генерации перенаправляем на страницу с маршрутом
-      window.location.href = `/route/${result.routeId}`;
+      // Подготавливаем данные маршрута для сохранения в localStorage
+      const routeToSave = {
+        ...result,
+        // Добавляем дополнительные данные из формы, если они не были включены в ответ сервера
+        duration: result.duration || formData.duration,
+        pace: result.pace || formData.pace,
+        timeOfDay: result.timeOfDay || formData.timeOfDay,
+        transportType: result.transportType || formData.transportType,
+        accessibility: result.accessibility || formData.accessibility
+      };
+
+      // Сохраняем сгенерированный маршрут в localStorage
+      localStorage.setItem('generatedRoute', JSON.stringify(routeToSave));
+      
+      // Перенаправляем на страницу с сгенерированным маршрутом
+      window.location.href = '/generated-route';
     } catch (error) {
       console.error('Error generating route:', error);
       setError('Произошла ошибка при создании маршрута. Пожалуйста, попробуйте снова.');
@@ -417,6 +427,18 @@ const RouteForm = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
+        {!user && (
+          <motion.div
+            className="guest-notice"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <FaInfoCircle className="notice-icon" />
+            <p>Вы используете гостевой режим. Маршрут будет создан, но не будет сохранен в профиле.</p>
+          </motion.div>
+        )}
+        
         <div className="form-header">
           <div className="steps-progress">
             {formSteps.map((step, index) => (

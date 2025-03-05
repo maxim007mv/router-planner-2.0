@@ -1,43 +1,57 @@
 .home-container {
   min-height: 100vh;
-  padding: 4rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 2rem;
+  background-color: #000000;
+  color: #fff;
+  overflow-x: hidden;
 }
 
 .home-container::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   background: 
-    radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 100% 0%, rgba(129, 140, 248, 0.2) 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 0% 100%, rgba(129, 140, 248, 0.15) 0%, transparent 50%);
+    radial-gradient(circle at 0% 0%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 100% 0%, rgba(244, 114, 182, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(244, 114, 182, 0.1) 0%, transparent 50%);
   filter: blur(120px);
-  opacity: 0.8;
+  opacity: 0.5;
   animation: pulseGlow 8s ease-in-out infinite;
-  z-index: -1;
+  z-index: 1;
+  pointer-events: none;
 }
 
 @keyframes pulseGlow {
-  0%, 100% { opacity: 0.8; transform: translateX(-50%) scale(1); }
-  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  0%, 100% { 
+    opacity: 0.5; 
+    transform: translateX(-50%) scale(1);
+    filter: blur(120px) brightness(1);
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: translateX(-50%) scale(1.1);
+    filter: blur(140px) brightness(1.2);
+  }
 }
 
 .hero-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
   text-align: center;
-  margin-bottom: 2rem;
-  animation: fadeIn 1s ease-out;
   position: relative;
+  z-index: 2;
 }
 
 .hero-section::before {
@@ -47,7 +61,7 @@
   left: -50%;
   right: -50%;
   bottom: -50%;
-  background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  background: radial-gradient(circle at center, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
   filter: blur(60px);
   z-index: -1;
   animation: rotateBg 15s linear infinite;
@@ -59,115 +73,60 @@
 }
 
 .home-title {
-  font-family: var(--font-main);
-  font-size: 4.5rem;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 4rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 1.5rem;
   line-height: 1.1;
-  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 50%, var(--accent-hover) 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.3));
-  animation: gradientFlow 8s linear infinite;
-}
-
-@keyframes gradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  background-clip: text;
 }
 
 .home-description {
-  font-family: var(--font-main);
+  font-family: 'Unbounded', sans-serif;
   font-size: 1.25rem;
   text-align: center;
   margin-bottom: 3rem;
-  color: var(--text-secondary);
+  color: #FFFFFF;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   line-height: 1.8;
-  animation: fadeIn 1s ease-out 0.2s backwards;
 }
 
 .create-route-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 1.4rem 3.5rem;
+  padding: 1.2rem 3rem;
   font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 500;
+  font-family: 'Unbounded', sans-serif;
+  color: #FFFFFF;
   text-decoration: none;
-  background: var(--gradient-accent);
-  border-radius: 30px;
-  box-shadow: var(--shadow-dark),
-              0 0 20px rgba(99, 102, 241, 0.3),
-              inset 0 0 20px rgba(255, 255, 255, 0.1);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-  overflow: hidden;
-  animation: fadeIn 1s ease-out 0.4s backwards;
-}
-
-.create-route-button::before {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    var(--accent-color) 25%,
-    var(--accent-hover) 50%,
-    var(--accent-color) 75%,
-    transparent 100%
-  );
-  animation: rotate 4s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.create-route-button::after {
-  content: '';
-  position: absolute;
-  inset: 2px;
-  background: var(--gradient-accent);
-  border-radius: 28px;
-  z-index: 1;
-}
-
-.create-route-button span {
-  position: relative;
-  z-index: 2;
-}
-
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  background: #000000;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
 .create-route-button:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: var(--shadow-dark),
-              0 0 30px rgba(99, 102, 241, 0.5),
-              inset 0 0 25px rgba(255, 255, 255, 0.2);
-}
-
-.create-route-button:hover::before {
-  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
 }
 
 .routes-container {
-  margin-top: 2rem;
-  padding: 3rem;
-  background: var(--gradient-dark);
-  border-radius: 40px;
-  box-shadow: var(--shadow-dark),
-              inset 0 0 30px rgba(99, 102, 241, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #000000;
+  border-radius: 24px;
   position: relative;
-  overflow: hidden;
-  animation: fadeIn 1s ease-out 0.6s backwards;
+  z-index: 2;
 }
 
 .routes-container::before {
@@ -180,7 +139,7 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--accent-color) 50%,
+    #A855F7 50%,
     transparent 100%
   );
   opacity: 0.7;
@@ -193,12 +152,15 @@
 }
 
 .routes-title {
-  font-family: var(--font-main);
+  font-family: 'Unbounded', sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   position: relative;
 }
 
@@ -210,70 +172,42 @@
   transform: translateX(-50%);
   width: 60px;
   height: 4px;
-  background: var(--gradient-accent);
+  background: linear-gradient(90deg, #A855F7, #7C3AED);
   border-radius: 2px;
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
 }
 
 .routes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2.5rem;
+  gap: 2rem;
   padding: 1rem;
 }
 
 .route-card {
-  background: var(--bg-darker);
-  border-radius: 30px;
+  background: #000000;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
-  box-shadow: var(--shadow-dark),
-              inset 0 0 20px rgba(99, 102, 241, 0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  position: relative;
-}
-
-.route-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 0%, 
-    rgba(99, 102, 241, 0.15) 0%,
-    transparent 70%);
-  opacity: 0;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
 }
 
 .route-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: var(--shadow-dark),
-              0 0 30px rgba(99, 102, 241, 0.2),
-              inset 0 0 30px rgba(99, 102, 241, 0.1);
-}
-
-.route-card:hover::before {
-  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
 }
 
 .route-image {
   width: 100%;
   height: 220px;
   object-fit: cover;
-  border-radius: 30px 30px 0 0;
-  position: relative;
-  z-index: 2;
-  transition: transform 0.4s ease;
-}
-
-.route-card:hover .route-image {
-  transform: scale(1.05);
 }
 
 .route-content {
   padding: 2rem;
-  background: var(--bg-dark);
+  background: #000000;
   position: relative;
   z-index: 2;
-  border-radius: 30px;
-  margin-top: -30px;
 }
 
 .route-icon {
@@ -283,12 +217,11 @@
   align-items: center;
   justify-content: center;
   margin: -40px auto 1.5rem;
-  background: var(--gradient-accent);
+  background: linear-gradient(135deg, #A855F7, #7C3AED);
   border-radius: 50%;
-  box-shadow: var(--shadow-dark),
-              0 0 20px rgba(99, 102, 241, 0.3),
-              inset 0 0 15px rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
+  box-shadow: 0 8px 32px rgba(168, 85, 247, 0.3),
+              inset 0 0 20px rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
   position: relative;
   z-index: 3;
   transition: all 0.4s ease;
@@ -296,23 +229,25 @@
 
 .route-card:hover .route-icon {
   transform: scale(1.1) rotate(5deg);
-  box-shadow: var(--shadow-dark),
-              0 0 30px rgba(99, 102, 241, 0.4),
-              inset 0 0 20px rgba(255, 255, 255, 0.3);
+  box-shadow: 0 12px 40px rgba(168, 85, 247, 0.4),
+              inset 0 0 30px rgba(255, 255, 255, 0.3);
 }
 
 .route-title {
-  font-family: var(--font-main);
+  font-family: 'Unbounded', sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--text-primary);
   margin-bottom: 1rem;
   text-align: center;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .route-description {
-  font-family: var(--font-main);
-  color: var(--text-secondary);
+  font-family: 'Unbounded', sans-serif;
+  color: #FFFFFF;
   font-size: 1rem;
   text-align: center;
   line-height: 1.8;
@@ -331,18 +266,14 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: var(--text-secondary);
+  color: #FFFFFF;
+  font-family: 'Unbounded', sans-serif;
   font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
-  .home-container {
-    padding: 2rem 1rem;
-    gap: 2rem;
-  }
-  
   .home-title {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
   
   .home-description {
@@ -358,7 +289,7 @@
   }
   
   .routes-container {
-    padding: 2rem 1rem;
+    padding: 1rem;
   }
   
   .routes-title {
