@@ -1,4 +1,4 @@
-(Due to technical issues, the search service is temporarily unavailable.)
+
 
 **ЛИЦЕНЗИОННОЕ СОГЛАШЕНИЕ**  
 **Route Planner (Zero-Copy, Non-Commercial, Anti-Fork License)**  
